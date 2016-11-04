@@ -2,10 +2,9 @@ MAKE = make
 CC = gcc
 INSTALL_FILE = install -m 644
 INSTALL_DIR = install -d
-LIBTOOL = libtool
 LN = ln -s
 RM = rm -fv
-CFLAGS += -c -O2 -Wall
+CFLAGS += -c -O2 -Wall -fPIC
 LDFLAGS += -framework OpenGL -framework CoreFoundation
 
 CFILES = image_DXT.c image_helper.c SOIL.c stb_image_aug.c stb_image_write.c
@@ -14,7 +13,6 @@ LIBNAME = libSOIL
 
 HFILES = SOIL.h image_DXT.h image_helper.h \
   stbi_DDS_aug.h stbi_DDS_aug_c.h stb_image_aug.h stb_image_write.h
-AFILE = libSOIL.a
 INCLUDEDIR = /usr/local/include/SOIL
 LIBDIR = /usr/local/lib
 
@@ -25,7 +23,7 @@ all: $(OFILES) lib
 
 lib: $(OFILES)
 	# create static library
-	$(LIBTOOL) -static -o $(AFILE) $(OFILES)
+	$(CC) -shared $(OFILES) -o $(LIBNAME).so
 
 install:
 	$(INSTALL_DIR) $(INCLUDEDIR)
@@ -36,8 +34,6 @@ install:
 clean:
 	$(RM) *.o
 	$(RM) *~
+	$(RM) $(LIBNAME).so
 
-distclean: clean
-	$(RM) $(AFILE)
-
-.PHONY: all lib clean distclean
+.PHONY: all lib clean
